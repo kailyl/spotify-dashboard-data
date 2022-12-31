@@ -1,0 +1,5 @@
+to get access and refresh key: 
+1) encode client id and client secret in base 64 (clientid:clientsecret)
+2) encode redirect uri using url encoder 
+3) go to url: https://accounts.spotify.com/authorize?client_id=CLIENT_ID&response_type=code&redirect_uri=ENCODED_URI&scope=user-read-recently-played and get code from redirected url 
+4) curl -d client_id=CLIENT_ID -d client_secret=CLIENT_SECRET -d grant_type=authorization_code -d code=CODE -d redirect_uri=REDIRECT_URI https://accounts.spotify.com/api/token
