@@ -1,2 +1,2 @@
 # spotify-dashboard-data
-Getting recently played data using Spotify and writing to my DynamoDB table everyday using a Lambda function and AWS EventBridge
+Getting recently played data using the Spotify API and writing to a DynamoDB table everyday - uses a Lambda function and AWS EventBridge
