@@ -99,7 +99,9 @@ def get_spotify_info():
 def lambda_handler(event: any, context: any):
     dynamodb = boto3.resource("dynamodb")
     table_name = os.environ["TABLE_NAME"]
+    dates_table_name = os.environ["DATES_TABLE"]
     table = dynamodb.Table(table_name)
+    dates_table = dynamodb.Table(dates_table_name)
 
     curr_day = str(datetime.datetime.now()).split(" ")[0]
     song_info = get_spotify_info()
@@ -117,6 +119,19 @@ def lambda_handler(event: any, context: any):
             curr_song = [songs[i], artists[i], played_at[i], popularity[i], audio_features[i]]
             song_list.append(curr_song)
 
+    response = dates_table.get_item(
+        Key={"all-dates": "all-dates"}
+    )
+    if "Item" in response:
+        curr_dates = response["Item"]["dates"]
+        curr_dates.append(curr_day)
+        dates_table.put_item(
+            Item={
+                "all-dates": "all-dates", 
+                "dates": curr_dates
+            }
+        )
+
     table.put_item(
         Item={
             "date": curr_day, 
@@ -128,5 +143,7 @@ def lambda_handler(event: any, context: any):
         "message": message
     }
 
-def main():
+if __name__ == "__main__":
+    os.environ["TABLE_NAME"] = "song-history"
+    os.environ["DATES_TABLE"] = "dates"
     print(lambda_handler(None, None))
